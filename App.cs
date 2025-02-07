@@ -18,7 +18,7 @@ public sealed class App
             while (true)
             {
                 this.WriteIntroduction();
-
+                this.WriteMainMenu();
             }
         } catch (Exception ex)
         {
@@ -29,5 +29,10 @@ public sealed class App
     private void WriteIntroduction()
     {
         this.ConsoleWriterService.WriteWithDoubleLine("Welcome to a Simple Console Application");
+    }
+
+    private void WriteMainMenu()
+    {
+
     }
 }
