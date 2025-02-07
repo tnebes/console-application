@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Dedicated Terminal": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+    }
+  }
+}
