@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>console_app</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
-	<LaunchJsonPath>Properties\launchSettings.json</LaunchJsonPath>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <RootNamespace>console_app</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
+        <LaunchJsonPath>Properties\launchSettings.json</LaunchJsonPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Faker" Version="1.2.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Faker" Version="1.2.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Data\"/>
+    </ItemGroup>
 
 </Project>

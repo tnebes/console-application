@@ -1,9 +1,14 @@
-﻿using console_app;
+﻿#region
+
+using console_app;
+
+#endregion
 
 try
 {
     new App();
-} catch (Exception ex)
+}
+catch (Exception ex)
 {
     Console.WriteLine(ex);
 }

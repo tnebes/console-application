@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace console_app.Models;
+﻿namespace console_app.Models;
 
 public sealed class Programme : Entity
 {
-    string Name;
+    private string Name { get; set; }
+    private double Price { get; set; }
 }
