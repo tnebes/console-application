@@ -66,13 +66,13 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
 
             while (true)
             {
-                oib = Util.ReadUserStringInput("Enter student OIB (11 digits) (or 'exit' to cancel):");
+                oib = Util.ReadUserStringInput("Enter student OIB (or 'exit' to cancel):");
                 if (oib.ToLower() == "exit")
                 {
                     return;
                 }
 
-                if (!string.IsNullOrWhiteSpace(oib) && oib.Length == 11 && oib.All(char.IsDigit))
+                if (!string.IsNullOrWhiteSpace(oib) && oib.Length == 11)
                 {
                     break;
                 }
@@ -99,7 +99,13 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
             while (true)
             {
                 string userInput =
-                    Util.ReadUserStringInput("Add group ID (or L to list all groups, or Enter to finish):");
+                    Util.ReadUserStringInput(
+                        "Add group ID (or L to list all groups, Enter to finish, or 'exit' to cancel):");
+                if (userInput.ToLower() == "exit")
+                {
+                    return;
+                }
+
                 if (string.IsNullOrWhiteSpace(userInput))
                 {
                     break;
@@ -165,7 +171,13 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
 
     public void Update()
     {
-        string userInput = Util.ReadUserStringInput("Enter student ID to update or L to list all students:");
+        string userInput =
+            Util.ReadUserStringInput("Enter student ID to update or L to list all students, or 'exit' to cancel:");
+        if (userInput.ToLower() == "exit")
+        {
+            return;
+        }
+
         if (userInput.ToLower() == "l")
         {
             this.GetAll();
@@ -192,7 +204,12 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         while (true)
         {
             newFirstName = Util.ReadUserStringInput(
-                $"Current first name: {existingStudent.FirstName}\nEnter new first name (or press Enter to keep current):");
+                $"Current first name: {existingStudent.FirstName}\nEnter new first name (or press Enter to keep current, or 'exit' to cancel):");
+            if (newFirstName.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(newFirstName) || newFirstName == "")
             {
                 break;
@@ -204,7 +221,12 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         while (true)
         {
             newLastName = Util.ReadUserStringInput(
-                $"Current last name: {existingStudent.LastName}\nEnter new last name (or press Enter to keep current):");
+                $"Current last name: {existingStudent.LastName}\nEnter new last name (or press Enter to keep current, or 'exit' to cancel):");
+            if (newLastName.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(newLastName) || newLastName == "")
             {
                 break;
@@ -216,14 +238,19 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         while (true)
         {
             newOib = Util.ReadUserStringInput(
-                $"Current OIB: {existingStudent.Oib}\nEnter new OIB (11 digits) (or press Enter to keep current):");
+                $"Current OIB: {existingStudent.Oib}\nEnter new OIB (or press Enter to keep current, or 'exit' to cancel):");
+            if (newOib.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(newOib))
             {
                 newOib = existingStudent.Oib;
                 break;
             }
 
-            if (!string.IsNullOrWhiteSpace(newOib) && newOib.Length == 11 && newOib.All(char.IsDigit))
+            if (newOib.Length == 11)
             {
                 break;
             }
@@ -234,14 +261,19 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         while (true)
         {
             newEmail = Util.ReadUserStringInput(
-                $"Current email: {existingStudent.Email}\nEnter new email (or press Enter to keep current):");
+                $"Current email: {existingStudent.Email}\nEnter new email (or press Enter to keep current, or 'exit' to cancel):");
+            if (newEmail.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(newEmail))
             {
                 newEmail = existingStudent.Email;
                 break;
             }
 
-            if (!string.IsNullOrWhiteSpace(newEmail) && newEmail.Contains('@'))
+            if (newEmail.Contains('@'))
             {
                 break;
             }
@@ -259,12 +291,17 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
             }
 
             string groupInput = Util.ReadUserStringInput(
-                "\nGroup management options:\n1. Add group\n2. Remove group\n3. List all groups\n4. Finish\nEnter your choice:");
+                "\nGroup management options:\n1. Add group\n2. Remove group\n3. List all groups\n4. Finish\n5. Exit\nEnter your choice:");
 
             switch (groupInput)
             {
                 case "1":
-                    string addGroupId = Util.ReadUserStringInput("Enter group ID to add:");
+                    string addGroupId = Util.ReadUserStringInput("Enter group ID to add (or 'exit' to cancel):");
+                    if (addGroupId.ToLower() == "exit")
+                    {
+                        continue;
+                    }
+
                     if (long.TryParse(addGroupId, out long groupIdToAdd) && groupIdToAdd > 0)
                     {
                         Group? group = this._jsonService.LoadEntity<Group>(groupIdToAdd);
@@ -288,7 +325,12 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                     break;
 
                 case "2":
-                    string removeGroupId = Util.ReadUserStringInput("Enter group ID to remove:");
+                    string removeGroupId = Util.ReadUserStringInput("Enter group ID to remove (or 'exit' to cancel):");
+                    if (removeGroupId.ToLower() == "exit")
+                    {
+                        continue;
+                    }
+
                     if (long.TryParse(removeGroupId, out long groupIdToRemove) && groupIdToRemove > 0)
                     {
                         if (newGroups.Remove(groupIdToRemove))
@@ -311,6 +353,9 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
 
                 case "4":
                     goto exitGroupManagement;
+
+                case "5":
+                    return;
 
                 default:
                     Console.WriteLine("Invalid option. Please try again.");
@@ -335,7 +380,13 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
 
     public void Delete()
     {
-        string userInput = Util.ReadUserStringInput("Enter student ID to delete or L to list all students:");
+        string userInput =
+            Util.ReadUserStringInput("Enter student ID to delete or L to list all students, or 'exit' to cancel:");
+        if (userInput.ToLower() == "exit")
+        {
+            return;
+        }
+
         if (userInput.ToLower() == "l")
         {
             this.ListAll();
@@ -354,6 +405,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         {
             Console.WriteLine("Student not found.");
         }
+
         Util.WaitForKeyPress();
     }
 
@@ -372,6 +424,6 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         {
             Console.WriteLine(student);
         }
-        Util.WaitForKeyPress();
+
     }
 }

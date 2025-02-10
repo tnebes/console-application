@@ -93,7 +93,13 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
 
     public void Update()
     {
-        string userInput = Util.ReadUserStringInput("Enter programme ID to update or L to list all programmes:");
+        string userInput =
+            Util.ReadUserStringInput("Enter programme ID to update or L to list all programmes, or 'exit' to cancel:");
+        if (userInput.ToLower() == "exit")
+        {
+            return;
+        }
+
         if (userInput.ToLower() == "l")
         {
             this.GetAll();
@@ -111,14 +117,18 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
             return;
         }
 
-
         string newName;
         double newPrice;
 
         while (true)
         {
             newName = Util.ReadUserStringInput(
-                $"Current name: {existingProgramme.Name}\nEnter new name (or press Enter to keep current):");
+                $"Current name: {existingProgramme.Name}\nEnter new name (or press Enter to keep current, or 'exit' to cancel):");
+            if (newName.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(newName) || newName == "")
             {
                 break;
@@ -130,14 +140,19 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         while (true)
         {
             string priceInput = Util.ReadUserStringInput(
-                $"Current price: {existingProgramme.Price}\nEnter new price (or press Enter to keep current):");
+                $"Current price: {existingProgramme.Price}\nEnter new price (or press Enter to keep current, or 'exit' to cancel):");
+            if (priceInput.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(priceInput))
             {
                 newPrice = existingProgramme.Price;
                 break;
             }
 
-            if (double.TryParse(priceInput, out newPrice) && newPrice > 0d)
+            if (double.TryParse(priceInput, out newPrice) && newPrice > 0)
             {
                 break;
             }
@@ -157,15 +172,30 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
 
     public void Delete()
     {
-        string userInput = Util.ReadUserStringInput("Enter programme ID to delete or L to list all programmes:");
-        if (userInput.ToLower() == "l")
+        long id;
+        while (true)
         {
-            this.ListAll();
-            this.Delete();
-            return;
+            string userInput = Util.ReadUserStringInput("Enter programme ID to delete or L to list all programmes, or 'exit' to cancel:");
+            if (userInput.ToLower() == "exit")
+            {
+                return;
+            }
+
+            if (userInput.ToLower() == "l")
+            {
+                this.ListAll();
+                this.Delete();
+                return;
+            }
+
+            if (long.TryParse(userInput, out id) && id > 0L)
+            {
+                break;
+            }
+
+            Console.WriteLine("Invalid input. Please enter a valid programme ID, 'L' to list, or 'exit' to cancel.");
         }
 
-        long id = long.Parse(userInput);
         bool deleted = this._jsonService.DeleteEntity<Programme>(id);
 
         if (deleted)
@@ -176,6 +206,7 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         {
             Console.WriteLine("Programme not found.");
         }
+
         Util.WaitForKeyPress();
     }
 
@@ -193,6 +224,6 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         {
             Console.WriteLine(programme);
         }
-        Util.WaitForKeyPress();
+
     }
 }

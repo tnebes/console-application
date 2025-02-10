@@ -1,6 +1,5 @@
 #region
 
-using Bogus;
 using console_app.Models;
 
 #endregion
@@ -10,15 +9,15 @@ namespace console_app.services.impl;
 public sealed class DataSeederServiceImpl : IDataSeederService
 {
     private static DataSeederServiceImpl? _instance;
-    private readonly IJsonService _jsonService;
-    private readonly IIdProviderService _idProvider;
     private readonly Bogus.Faker _faker;
+    private readonly IIdProviderService _idProvider;
+    private readonly IJsonService _jsonService;
 
     private DataSeederServiceImpl()
     {
         this._jsonService = JsonServiceImpl.Instance;
         this._idProvider = IdProviderServiceImpl.Instance;
-        this._faker = new Bogus.Faker("en");
+        this._faker = new Bogus.Faker();
     }
 
     public static DataSeederServiceImpl Instance
@@ -52,7 +51,8 @@ public sealed class DataSeederServiceImpl : IDataSeederService
         }
 
         Console.WriteLine("Data seeding completed successfully.");
-        Console.WriteLine($"Created {programmes.Count} programmes, {groups.Count} groups, and {students.Count} students.");
+        Console.WriteLine(
+            $"Created {programmes.Count} programmes, {groups.Count} groups, and {students.Count} students.");
     }
 
     private List<Programme> SeedProgrammes(int count)
@@ -117,4 +117,4 @@ public sealed class DataSeederServiceImpl : IDataSeederService
 
         return students;
     }
-} 
+}

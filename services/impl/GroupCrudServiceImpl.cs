@@ -48,7 +48,13 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
 
             while (true)
             {
-                string userInput = Util.ReadUserStringInput("Enter programme ID (or L to list all programmes):");
+                string userInput =
+                    Util.ReadUserStringInput("Enter programme ID (or L to list all programmes, or 'exit' to cancel):");
+                if (userInput.ToLower() == "exit")
+                {
+                    return;
+                }
+
                 if (userInput.ToLower() == "l")
                 {
                     this._programmeCrudService.ListAll();
@@ -69,7 +75,12 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
 
             while (true)
             {
-                string dateInput = Util.ReadUserStringInput("Enter start date (MM/dd/yyyy):");
+                string dateInput = Util.ReadUserStringInput("Enter start date (MM/dd/yyyy) or 'exit' to cancel:");
+                if (dateInput.ToLower() == "exit")
+                {
+                    return;
+                }
+
                 if (DateTime.TryParse(dateInput, out startDate))
                 {
                     break;
@@ -107,21 +118,35 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
             return;
         }
 
-
         this._consoleWriter.WriteEntityAction("Group Details", group);
     }
 
     public void Update()
     {
-        string userInput = Util.ReadUserStringInput("Enter group ID to update or L to list all groups:");
-        if (userInput.ToLower() == "l")
+        long id;
+        while (true)
         {
-            this.GetAll();
-            this.Update();
-            return;
+            string userInput = Util.ReadUserStringInput("Enter group ID to update or L to list all groups, or 'exit' to cancel:");
+            if (userInput.ToLower() == "exit")
+            {
+                return;
+            }
+
+            if (userInput.ToLower() == "l")
+            {
+                this.GetAll();
+                this.Update();
+                return;
+            }
+
+            if (long.TryParse(userInput, out id) && id > 0L)
+            {
+                break;
+            }
+
+            Console.WriteLine("Invalid input. Please enter a valid group ID, 'L' to list, or 'exit' to cancel.");
         }
 
-        long id = long.Parse(userInput);
         Group? existingGroup = this._jsonService.LoadEntity<Group>(id);
 
         if (existingGroup == null)
@@ -131,7 +156,6 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
             return;
         }
 
-
         string newName;
         long newProgrammeId;
         DateTime newStartDate = existingGroup.StartDate;
@@ -139,7 +163,12 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         while (true)
         {
             newName = Util.ReadUserStringInput(
-                $"Current name: {existingGroup.Name}\nEnter new name (or press Enter to keep current):");
+                $"Current name: {existingGroup.Name}\nEnter new name (or press Enter to keep current, or 'exit' to cancel):");
+            if (newName.ToLower() == "exit")
+            {
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(newName) || newName == "")
             {
                 break;
@@ -151,7 +180,12 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         while (true)
         {
             string programmeInput = Util.ReadUserStringInput(
-                $"Current programme ID: {existingGroup.ProgrammeId}\nEnter new programme ID (or L to list all programmes, or press Enter to keep current):");
+                $"Current programme ID: {existingGroup.ProgrammeId}\nEnter new programme ID (or L to list all programmes, press Enter to keep current, or 'exit' to cancel):");
+
+            if (programmeInput.ToLower() == "exit")
+            {
+                return;
+            }
 
             if (string.IsNullOrEmpty(programmeInput))
             {
@@ -178,7 +212,12 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         }
 
         string dateInput = Util.ReadUserStringInput(
-            $"Current start date: {existingGroup.StartDate:d}\nEnter new start date (MM/dd/yyyy) or press Enter to keep current:");
+            $"Current start date: {existingGroup.StartDate:d}\nEnter new start date (MM/dd/yyyy), press Enter to keep current, or 'exit' to cancel:");
+
+        if (dateInput.ToLower() == "exit")
+        {
+            return;
+        }
 
         if (!string.IsNullOrWhiteSpace(dateInput))
         {
@@ -205,15 +244,30 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
 
     public void Delete()
     {
-        string userInput = Util.ReadUserStringInput("Enter group ID to delete or L to list all groups:");
-        if (userInput.ToLower() == "l")
+        long id;
+        while (true)
         {
-            this.ListAll();
-            this.Delete();
-            return;
+            string userInput = Util.ReadUserStringInput("Enter group ID to delete or L to list all groups, or 'exit' to cancel:");
+            if (userInput.ToLower() == "exit")
+            {
+                return;
+            }
+
+            if (userInput.ToLower() == "l")
+            {
+                this.ListAll();
+                this.Delete();
+                return;
+            }
+
+            if (long.TryParse(userInput, out id) && id > 0L)
+            {
+                break;
+            }
+
+            Console.WriteLine("Invalid input. Please enter a valid group ID, 'L' to list, or 'exit' to cancel.");
         }
 
-        long id = long.Parse(userInput);
         bool deleted = this._jsonService.DeleteEntity<Group>(id);
 
         if (deleted)
@@ -224,9 +278,9 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         {
             Console.WriteLine("Group not found.");
         }
+
         Util.WaitForKeyPress();
     }
-
 
     public void ListAll()
     {
@@ -234,6 +288,7 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         if (groups.Count == 0)
         {
             Console.WriteLine("No groups found.");
+            Util.WaitForKeyPress();
             return;
         }
 
@@ -242,6 +297,6 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         {
             Console.WriteLine(group);
         }
-        Util.WaitForKeyPress();
+        
     }
 }

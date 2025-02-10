@@ -14,8 +14,6 @@ public sealed class App
     private const ConsoleColor MenuItemColor = ConsoleColor.Green;
     private const ConsoleColor SelectedItemColor = ConsoleColor.White;
     private readonly IConsoleWriterService _consoleWriterService = ConsoleWriterServiceImpl.Instance;
-    private readonly IDataSeederService _dataSeederService = DataSeederServiceImpl.Instance;
-    private readonly IGroupStatisticsService _statisticsService = GroupStatisticsServiceImpl.Instance;
 
     private readonly Dictionary<Type, ICrudService> _crudServices = new()
     {
@@ -24,12 +22,16 @@ public sealed class App
         { typeof(Programme), new ProgrammeCrudServiceImpl() }
     };
 
+    private readonly IDataSeederService _dataSeederService = DataSeederServiceImpl.Instance;
+
     private readonly List<EntityTypeInfo> _entityTypes =
     [
         new(Enums.EntityTypes.Student, "Student", typeof(Student)),
         new(Enums.EntityTypes.Group, "Group", typeof(Group)),
         new(Enums.EntityTypes.Programme, "Programme", typeof(Programme))
     ];
+
+    private readonly IGroupStatisticsService _statisticsService = GroupStatisticsServiceImpl.Instance;
 
     public App()
     {
@@ -146,7 +148,8 @@ public sealed class App
         double avgRevenuePerParticipant = this._statisticsService.GetAverageRevenuePerParticipant();
         Console.WriteLine($"\nAverage revenue per participant: \u20ac{avgRevenuePerParticipant:F2}");
 
-        (DateTime? Earliest, DateTime? Latest, int? DaysBetween) dateStats = this._statisticsService.GetGroupDateStatistics();
+        (DateTime? Earliest, DateTime? Latest, int? DaysBetween) dateStats =
+            this._statisticsService.GetGroupDateStatistics();
         if (dateStats.Earliest.HasValue && dateStats.Latest.HasValue)
         {
             Console.WriteLine($"\nEarliest group start date: {dateStats.Earliest.Value:d}");
