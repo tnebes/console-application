@@ -23,7 +23,7 @@ public sealed class JsonServiceImpl : IJsonService
     private JsonServiceImpl()
     {
         Directory.CreateDirectory(_jsonDirectory);
-        foreach (var filePath in _jsonFilePaths.Values)
+        foreach (string filePath in _jsonFilePaths.Values)
         {
             if (!File.Exists(filePath))
             {

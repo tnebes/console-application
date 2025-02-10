@@ -84,6 +84,7 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         if (programme == null)
         {
             Console.WriteLine("Programme not found.");
+            Util.WaitForKeyPress();
             return;
         }
 
@@ -106,8 +107,10 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         if (existingProgramme == null)
         {
             Console.WriteLine("Programme not found.");
+            Util.WaitForKeyPress();
             return;
         }
+
 
         string newName;
         double newPrice;
@@ -173,6 +176,7 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         {
             Console.WriteLine("Programme not found.");
         }
+        Util.WaitForKeyPress();
     }
 
     public void ListAll()
@@ -189,5 +193,6 @@ public sealed class ProgrammeCrudServiceImpl : ICrudService<Programme>
         {
             Console.WriteLine(programme);
         }
+        Util.WaitForKeyPress();
     }
 }

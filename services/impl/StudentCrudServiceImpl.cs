@@ -122,6 +122,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                     else
                     {
                         Console.WriteLine("Group not found.");
+                        Util.WaitForKeyPress();
                     }
                 }
                 else
@@ -155,6 +156,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         if (student == null)
         {
             Console.WriteLine("Student not found.");
+            Util.WaitForKeyPress();
             return;
         }
 
@@ -177,6 +179,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         if (existingStudent == null)
         {
             Console.WriteLine("Student not found.");
+            Util.WaitForKeyPress();
             return;
         }
 
@@ -273,10 +276,12 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                         else if (newGroups.Contains(groupIdToAdd))
                         {
                             Console.WriteLine("Student is already in this group.");
+                            Util.WaitForKeyPress();
                         }
                         else
                         {
                             Console.WriteLine("Group not found.");
+                            Util.WaitForKeyPress();
                         }
                     }
 
@@ -289,10 +294,12 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                         if (newGroups.Remove(groupIdToRemove))
                         {
                             Console.WriteLine("Group removed successfully.");
+                            Util.WaitForKeyPress();
                         }
                         else
                         {
                             Console.WriteLine("Student is not in this group.");
+                            Util.WaitForKeyPress();
                         }
                     }
 
@@ -347,6 +354,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         {
             Console.WriteLine("Student not found.");
         }
+        Util.WaitForKeyPress();
     }
 
     public void ListAll()
@@ -355,6 +363,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         if (students.Count == 0)
         {
             Console.WriteLine("No students found.");
+            Util.WaitForKeyPress();
             return;
         }
 
@@ -363,5 +372,6 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
         {
             Console.WriteLine(student);
         }
+        Util.WaitForKeyPress();
     }
 }

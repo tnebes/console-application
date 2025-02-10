@@ -103,8 +103,10 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         if (group == null)
         {
             Console.WriteLine("Group not found.");
+            Util.WaitForKeyPress();
             return;
         }
+
 
         this._consoleWriter.WriteEntityAction("Group Details", group);
     }
@@ -125,8 +127,10 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         if (existingGroup == null)
         {
             Console.WriteLine("Group not found.");
+            Util.WaitForKeyPress();
             return;
         }
+
 
         string newName;
         long newProgrammeId;
@@ -220,7 +224,9 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         {
             Console.WriteLine("Group not found.");
         }
+        Util.WaitForKeyPress();
     }
+
 
     public void ListAll()
     {
@@ -236,5 +242,6 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         {
             Console.WriteLine(group);
         }
+        Util.WaitForKeyPress();
     }
 }

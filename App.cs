@@ -140,13 +140,13 @@ public sealed class App
         Console.WriteLine("\nRevenue by Programme:");
         foreach (KeyValuePair<string, double> revenue in revenueByProgramme)
         {
-            Console.WriteLine($"  {revenue.Key}: ${revenue.Value:F2}");
+            Console.WriteLine($"  {revenue.Key}: \u20ac{revenue.Value:F2}");
         }
 
         double avgRevenuePerParticipant = this._statisticsService.GetAverageRevenuePerParticipant();
-        Console.WriteLine($"\nAverage revenue per participant: ${avgRevenuePerParticipant:F2}");
+        Console.WriteLine($"\nAverage revenue per participant: \u20ac{avgRevenuePerParticipant:F2}");
 
-        var dateStats = this._statisticsService.GetGroupDateStatistics();
+        (DateTime? Earliest, DateTime? Latest, int? DaysBetween) dateStats = this._statisticsService.GetGroupDateStatistics();
         if (dateStats.Earliest.HasValue && dateStats.Latest.HasValue)
         {
             Console.WriteLine($"\nEarliest group start date: {dateStats.Earliest.Value:d}");
