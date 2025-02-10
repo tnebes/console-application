@@ -10,9 +10,9 @@ namespace console_app.services.impl;
 public sealed class StudentCrudServiceImpl : ICrudService<Student>
 {
     private readonly IConsoleWriterService _consoleWriter;
+    private readonly ICrudService<Group> _groupCrudService;
     private readonly IIdProviderService _idProvider;
     private readonly IJsonService _jsonService;
-    private readonly ICrudService<Group> _groupCrudService;
 
     public StudentCrudServiceImpl()
     {
@@ -98,7 +98,8 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
 
             while (true)
             {
-                string userInput = Util.ReadUserStringInput("Add group ID (or L to list all groups, or Enter to finish):");
+                string userInput =
+                    Util.ReadUserStringInput("Add group ID (or L to list all groups, or Enter to finish):");
                 if (string.IsNullOrWhiteSpace(userInput))
                 {
                     break;
@@ -278,6 +279,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                             Console.WriteLine("Group not found.");
                         }
                     }
+
                     break;
 
                 case "2":
@@ -293,6 +295,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                             Console.WriteLine("Student is not in this group.");
                         }
                     }
+
                     break;
 
                 case "3":
@@ -307,6 +310,7 @@ public sealed class StudentCrudServiceImpl : ICrudService<Student>
                     break;
             }
         }
+
         exitGroupManagement:
 
         Student updatedStudent = new(

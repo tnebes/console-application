@@ -11,7 +11,11 @@ namespace console_app;
 
 public sealed class App
 {
+    private const ConsoleColor MenuItemColor = ConsoleColor.Green;
+    private const ConsoleColor SelectedItemColor = ConsoleColor.White;
     private readonly IConsoleWriterService _consoleWriterService = ConsoleWriterServiceImpl.Instance;
+    private readonly IDataSeederService _dataSeederService = DataSeederServiceImpl.Instance;
+    private readonly IGroupStatisticsService _statisticsService = GroupStatisticsServiceImpl.Instance;
 
     private readonly Dictionary<Type, ICrudService> _crudServices = new()
     {
@@ -31,11 +35,14 @@ public sealed class App
     {
         try
         {
+            this.WriteIntroduction();
             bool exitRequested = false;
 
             while (!exitRequested)
             {
-                string[] mainMenuItems = this._entityTypes.Select(e => e.Name).Concat(["Exit"]).ToArray();
+                string[] mainMenuItems = this._entityTypes.Select(e => e.Name)
+                    .Concat(["Statistics", "Seed Sample Data", "Exit"])
+                    .ToArray();
                 int selection = this.DisplayMenu("Main Menu", mainMenuItems);
 
                 if (selection == mainMenuItems.Length - 1)
@@ -45,26 +52,45 @@ public sealed class App
                 }
 
                 Util.ClearScreen();
-                EntityTypeInfo selectedType = this._entityTypes[selection];
-                this.HandleCrudOperations(selectedType.EntityType);
+                if (selection == mainMenuItems.Length - 2)
+                {
+                    this._dataSeederService.SeedData();
+                    Util.WaitForKeyPress();
+                }
+                else if (selection == mainMenuItems.Length - 3)
+                {
+                    this.DisplayStatistics();
+                }
+                else
+                {
+                    EntityTypeInfo selectedType = this._entityTypes[selection];
+                    this.HandleCrudOperations(selectedType.EntityType);
+                }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            Console.ForegroundColor = MenuItemColor;
         }
     }
 
     private int DisplayMenu(string title, string[] options)
     {
         this._consoleWriterService.WriteWithDoubleLine(title);
+        Console.WriteLine();
 
         for (int i = 0; i < options.Length; i++)
         {
-            Console.WriteLine($"{i + 1}. {options[i]}");
+            Console.ForegroundColor = MenuItemColor;
+            Console.Write($"  {i + 1}. ");
+            Console.ForegroundColor = SelectedItemColor;
+            Console.WriteLine(options[i]);
         }
 
-        return Util.ReadUserIntInput("\nEnter your choice: ", 1, options.Length) - 1;
+        Console.WriteLine();
+        return Util.ReadUserIntInput("Enter your choice:", 1, options.Length) - 1;
     }
 
     private void HandleCrudOperations(Type entityType)
@@ -95,6 +121,40 @@ public sealed class App
 
     private void WriteIntroduction()
     {
-        this._consoleWriterService.WriteWithDoubleLine("Welcome to a Simple Console Application");
+        Util.ClearScreen();
+        this._consoleWriterService.WriteWithDoubleLine("Welcome to Student Management System");
+        Console.WriteLine();
+    }
+
+    private void DisplayStatistics()
+    {
+        this._consoleWriterService.WriteWithDoubleLine("Group Statistics");
+
+        int totalStudents = this._statisticsService.GetTotalStudents();
+        Console.WriteLine($"Total number of students: {totalStudents}");
+
+        double avgStudentsPerGroup = this._statisticsService.GetAverageStudentsPerGroup();
+        Console.WriteLine($"Average students per group: {avgStudentsPerGroup:F2}");
+
+        Dictionary<string, double> revenueByProgramme = this._statisticsService.GetRevenueByProgramme();
+        Console.WriteLine("\nRevenue by Programme:");
+        foreach (KeyValuePair<string, double> revenue in revenueByProgramme)
+        {
+            Console.WriteLine($"  {revenue.Key}: ${revenue.Value:F2}");
+        }
+
+        double avgRevenuePerParticipant = this._statisticsService.GetAverageRevenuePerParticipant();
+        Console.WriteLine($"\nAverage revenue per participant: ${avgRevenuePerParticipant:F2}");
+
+        var dateStats = this._statisticsService.GetGroupDateStatistics();
+        if (dateStats.Earliest.HasValue && dateStats.Latest.HasValue)
+        {
+            Console.WriteLine($"\nEarliest group start date: {dateStats.Earliest.Value:d}");
+            Console.WriteLine($"Latest group start date: {dateStats.Latest.Value:d}");
+            Console.WriteLine($"Days between: {dateStats.DaysBetween}");
+        }
+
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 }

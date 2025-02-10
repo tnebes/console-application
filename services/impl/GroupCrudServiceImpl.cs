@@ -28,6 +28,7 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         {
             string name;
             long programmeId;
+            DateTime startDate;
 
             while (true)
             {
@@ -66,7 +67,18 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
                 Console.WriteLine("Invalid programme ID. Please try again.");
             }
 
-            Group group = new(this._idProvider.GetNextId(typeof(Group)), name, programmeId);
+            while (true)
+            {
+                string dateInput = Util.ReadUserStringInput("Enter start date (MM/dd/yyyy):");
+                if (DateTime.TryParse(dateInput, out startDate))
+                {
+                    break;
+                }
+
+                Console.WriteLine("Invalid date format. Please use MM/dd/yyyy format.");
+            }
+
+            Group group = new(this._idProvider.GetNextId(typeof(Group)), name, programmeId, startDate);
             this._jsonService.CreateEntity(group);
             this._consoleWriter.WriteEntityAction("Group created", group);
         }
@@ -118,6 +130,7 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
 
         string newName;
         long newProgrammeId;
+        DateTime newStartDate = existingGroup.StartDate;
 
         while (true)
         {
@@ -135,7 +148,7 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
         {
             string programmeInput = Util.ReadUserStringInput(
                 $"Current programme ID: {existingGroup.ProgrammeId}\nEnter new programme ID (or L to list all programmes, or press Enter to keep current):");
-            
+
             if (string.IsNullOrEmpty(programmeInput))
             {
                 newProgrammeId = existingGroup.ProgrammeId;
@@ -160,10 +173,26 @@ public sealed class GroupCrudServiceImpl : ICrudService<Group>
             Console.WriteLine("Invalid programme ID. Please try again.");
         }
 
+        string dateInput = Util.ReadUserStringInput(
+            $"Current start date: {existingGroup.StartDate:d}\nEnter new start date (MM/dd/yyyy) or press Enter to keep current:");
+
+        if (!string.IsNullOrWhiteSpace(dateInput))
+        {
+            if (DateTime.TryParse(dateInput, out DateTime parsedDate))
+            {
+                newStartDate = parsedDate;
+            }
+            else
+            {
+                Console.WriteLine("Invalid date format. Keeping current start date.");
+            }
+        }
+
         Group updatedGroup = new(
             existingGroup.Id,
             string.IsNullOrWhiteSpace(newName) ? existingGroup.Name : newName,
-            newProgrammeId
+            newProgrammeId,
+            newStartDate
         );
 
         this._jsonService.UpdateEntity(updatedGroup, existingGroup.Id);
