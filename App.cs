@@ -1,9 +1,9 @@
 ﻿#region
 
 using console_app.Models;
-using console_app.Services;
-using console_app.Services.Impl;
-using console_app.Util;
+using console_app.services;
+using console_app.services.impl;
+using console_app.util;
 
 #endregion
 
@@ -20,12 +20,12 @@ public sealed class App
         { typeof(Programme), new ProgrammeCrudServiceImpl() }
     };
 
-    private readonly List<EntityTypeInfo> _entityTypes = new()
-    {
-        new EntityTypeInfo(Enums.EntityTypes.Student, "Student", typeof(Student)),
-        new EntityTypeInfo(Enums.EntityTypes.Group, "Group", typeof(Group)),
-        new EntityTypeInfo(Enums.EntityTypes.Programme, "Programme", typeof(Programme))
-    };
+    private readonly List<EntityTypeInfo> _entityTypes =
+    [
+        new(Enums.EntityTypes.Student, "Student", typeof(Student)),
+        new(Enums.EntityTypes.Group, "Group", typeof(Group)),
+        new(Enums.EntityTypes.Programme, "Programme", typeof(Programme))
+    ];
 
     public App()
     {
@@ -35,8 +35,8 @@ public sealed class App
 
             while (!exitRequested)
             {
-                string[] mainMenuItems = _entityTypes.Select(e => e.Name).Concat(new[] { "Exit" }).ToArray();
-                int selection = DisplayMenu("Main Menu", mainMenuItems);
+                string[] mainMenuItems = this._entityTypes.Select(e => e.Name).Concat(["Exit"]).ToArray();
+                int selection = this.DisplayMenu("Main Menu", mainMenuItems);
 
                 if (selection == mainMenuItems.Length - 1)
                 {
@@ -44,8 +44,9 @@ public sealed class App
                     continue;
                 }
 
-                EntityTypeInfo selectedType = _entityTypes[selection];
-                HandleCrudOperations(selectedType.EntityType);
+                Util.ClearScreen();
+                EntityTypeInfo selectedType = this._entityTypes[selection];
+                this.HandleCrudOperations(selectedType.EntityType);
             }
         }
         catch (Exception ex)
@@ -56,37 +57,44 @@ public sealed class App
 
     private int DisplayMenu(string title, string[] options)
     {
-        _consoleWriterService.WriteWithDoubleLine(title);
+        this._consoleWriterService.WriteWithDoubleLine(title);
 
-        for (int i = 0; i < options.Length; i++) Console.WriteLine($"{i + 1}. {options[i]}");
+        for (int i = 0; i < options.Length; i++)
+        {
+            Console.WriteLine($"{i + 1}. {options[i]}");
+        }
 
-        Console.Write("\nEnter your choice: ");
-        return int.Parse(Console.ReadLine()!) - 1;
+        return Util.ReadUserIntInput("\nEnter your choice: ", 1, options.Length) - 1;
     }
 
     private void HandleCrudOperations(Type entityType)
     {
         string[] crudOptions = { "Create", "List All", "View Details", "Update", "Delete", "Back" };
-        ICrudService service = _crudServices[entityType];
+        ICrudService service = this._crudServices[entityType];
 
         while (true)
         {
-            int choice = DisplayMenu($"Manage {entityType.Name}s", crudOptions);
+            int choice = this.DisplayMenu($"Manage {entityType.Name}s", crudOptions);
+
+            Action? selectedMethod = null;
 
             switch (choice)
             {
-                case 0: service.Create(); break;
-                case 1: service.GetAll(); break;
-                case 2: service.GetById(); break;
-                case 3: service.Update(); break;
-                case 4: service.Delete(); break;
+                case 0: selectedMethod = () => service.Create(); break;
+                case 1: selectedMethod = () => service.GetAll(); break;
+                case 2: selectedMethod = () => service.GetById(); break;
+                case 3: selectedMethod = () => service.Update(); break;
+                case 4: selectedMethod = () => service.Delete(); break;
                 case 5: return;
             }
+
+            Util.ClearScreen();
+            selectedMethod();
         }
     }
 
     private void WriteIntroduction()
     {
-        _consoleWriterService.WriteWithDoubleLine("Welcome to a Simple Console Application");
+        this._consoleWriterService.WriteWithDoubleLine("Welcome to a Simple Console Application");
     }
 }

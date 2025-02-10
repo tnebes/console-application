@@ -1,4 +1,4 @@
-namespace console_app.Util;
+namespace console_app.util;
 
 public static class Enums
 {

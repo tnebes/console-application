@@ -1,4 +1,4 @@
-﻿namespace console_app.Services;
+﻿namespace console_app.services;
 
 public interface IConsoleWriterService
 {
@@ -8,4 +8,5 @@ public interface IConsoleWriterService
     void WriteLine(int messageLength = LineLength, char lineCharacter = DefaultCharacter);
     void WriteWithSingleLine(string message, int messageLength = LineLength, char lineCharacter = DefaultCharacter);
     void WriteWithDoubleLine(string message, int messageLength = LineLength, char lineCharacter = DefaultCharacter);
+    void WriteEntityAction<T>(string actionMessage, T entity);
 }

@@ -1,10 +1,11 @@
 ﻿#region
 
 using System.Text;
+using console_app.util;
 
 #endregion
 
-namespace console_app.Services.Impl;
+namespace console_app.services.impl;
 
 public sealed class ConsoleWriterServiceImpl : IConsoleWriterService
 {
@@ -18,7 +19,10 @@ public sealed class ConsoleWriterServiceImpl : IConsoleWriterService
     {
         get
         {
-            if (_instance == null) _instance = new ConsoleWriterServiceImpl();
+            if (_instance == null)
+            {
+                _instance = new ConsoleWriterServiceImpl();
+            }
 
             return _instance;
         }
@@ -27,22 +31,30 @@ public sealed class ConsoleWriterServiceImpl : IConsoleWriterService
     public void WriteLine(int messageLength = IConsoleWriterService.LineLength,
         char lineCharacter = IConsoleWriterService.DefaultCharacter)
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         Console.WriteLine(sb.AppendJoin("", Enumerable.Repeat(lineCharacter, messageLength)).ToString());
     }
 
     public void WriteWithDoubleLine(string message, int messageLength = IConsoleWriterService.LineLength,
         char lineCharacter = IConsoleWriterService.DefaultCharacter)
     {
-        WriteLine(messageLength);
+        this.WriteLine(messageLength);
         Console.WriteLine(message);
-        WriteLine(messageLength);
+        this.WriteLine(messageLength);
     }
 
     public void WriteWithSingleLine(string message, int messageLength = IConsoleWriterService.LineLength,
         char lineCharacter = IConsoleWriterService.DefaultCharacter)
     {
-        WriteLine(messageLength);
+        this.WriteLine(messageLength);
         Console.WriteLine(message);
+    }
+
+    public void WriteEntityAction<T>(string actionMessage, T entity)
+    {
+        Util.ClearScreen();
+        this.WriteWithDoubleLine(actionMessage);
+        Console.WriteLine(entity.ToString());
+        Util.WaitForKeyPress();
     }
 }
